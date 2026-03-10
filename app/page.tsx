@@ -3,6 +3,7 @@
 import { Hero } from '@/components/hero'
 import { Stats } from '@/components/stats'
 import { Occasions } from '@/components/occasions'
+import { Spaces } from '@/components/spaces'
 import { Gallery } from '@/components/gallery'
 import { Testimonials } from '@/components/testimonials'
 import { Contact } from '@/components/contact'
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <Stats />
       <Occasions />
+      <Spaces />
       <Gallery />
       <Testimonials />
       <Contact />

@@ -10,6 +10,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByPhoneOrderByEventDateDescCreatedAtDesc(String phone);
 
     List<Booking> findBySpaceNameAndEventDateAndStatusNot(String spaceName, LocalDate eventDate, BookingStatus status);
+
+    List<Booking> findAllByOrderByEventDateDescCreatedAtDesc();
 }
 
 

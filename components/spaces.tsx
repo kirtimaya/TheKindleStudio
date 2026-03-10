@@ -14,11 +14,11 @@ export function Spaces() {
     <section id="spaces" className="py-20 bg-gradient-to-b from-background to-secondary/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Our Spaces</h2>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-700 text-sm font-semibold mb-4">
+            Our Spaces
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Choose Your Perfect Space</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Choose Your Perfect Space
-          </p>
-          <p className="text-muted-foreground">
             From intimate theatre experiences to grand celebrations
           </p>
         </div>
@@ -38,11 +38,10 @@ export function Spaces() {
               />
               <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-500 ${hoveredCard === 1 ? 'opacity-100' : 'opacity-90'}`} />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/95 backdrop-blur-sm text-sm font-medium shadow-lg">
-                  <Users className="w-4 h-4 text-primary" />
-                  <span>Up to 22 People</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600/90 backdrop-blur-sm text-sm font-medium shadow-lg text-white">
+                  <Users className="w-4 h-4" />
+                  <span>Up to 22</span>
                 </div>
-                <Badge className="bg-primary text-primary-foreground">Popular</Badge>
               </div>
               <div className={`absolute top-4 right-4 transition-all duration-500 ${hoveredCard === 1 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
                 <div className="bg-accent/90 backdrop-blur-sm text-accent-foreground px-3 py-1 rounded-full text-xs font-semibold">
@@ -51,11 +50,12 @@ export function Spaces() {
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+              <CardTitle className="text-2xl">
                 The Celebs Town - Private Theatre
               </CardTitle>
-              <CardDescription className="text-base">
-                Boho-themed private cinema for cozy, picture-perfect celebrations.
+              <CardDescription className="text-xs font-semibold text-orange-600 mb-2">Boho Themed Private Cinema</CardDescription>
+              <CardDescription className="text-sm">
+                Experience luxury in our intimate boho-themed private theatre.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -86,15 +86,15 @@ export function Spaces() {
               </div>
               
               <div className="pt-4 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Flexible packages curated for intimate, luxury experiences.
-                  </p>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-2">Starting from</p>
+                    <p className="text-2xl font-bold text-orange-600">₹499 - ₹1499</p>
+                  </div>
                   <Button
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-transform shadow-lg"
-                    asChild
+                    className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
                   >
-                    <Link href="/book">Book Now</Link>
+                    Book Now
                   </Button>
                 </div>
               </div>
@@ -115,24 +115,19 @@ export function Spaces() {
               />
               <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-500 ${hoveredCard === 2 ? 'opacity-100' : 'opacity-90'}`} />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/95 backdrop-blur-sm text-sm font-medium shadow-lg">
-                  <Users className="w-4 h-4 text-accent" />
-                  <span>Up to 80 People</span>
-                </div>
-                <Badge className="bg-accent text-accent-foreground">Versatile</Badge>
-              </div>
-              <div className={`absolute top-4 right-4 transition-all duration-500 ${hoveredCard === 2 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
-                <div className="bg-primary/90 backdrop-blur-sm text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                  Large Events
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600/90 backdrop-blur-sm text-sm font-medium shadow-lg text-white">
+                  <Users className="w-4 h-4" />
+                  <span>Up to 80</span>
                 </div>
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-2xl group-hover:text-accent transition-colors">
+              <CardTitle className="text-2xl">
                 The Nawabi Hall - Community Space
               </CardTitle>
-              <CardDescription className="text-base">
-                A versatile hall for birthdays, sangeets, corporate events and community gatherings.
+              <CardDescription className="text-xs font-semibold text-orange-600 mb-2">Versatile Event Venue</CardDescription>
+              <CardDescription className="text-sm">
+                A customizable community space perfect for larger gatherings.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -163,15 +158,15 @@ export function Spaces() {
               </div>
               
               <div className="pt-4 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Customisable layouts and decor to match your celebration.
-                  </p>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-2">Starting from</p>
+                    <p className="text-2xl font-bold text-orange-600">₹2999 - ₹5999</p>
+                  </div>
                   <Button
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 hover:scale-105 transition-transform shadow-lg"
-                    asChild
+                    className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
                   >
-                    <Link href="/book">Book Now</Link>
+                    Book Now
                   </Button>
                 </div>
               </div>

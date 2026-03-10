@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -15,6 +16,7 @@ type BookingDialogProps = {
   externalAddOns?: string
   externalEventDate?: string
   externalTimeSlot?: string
+  addonsTotal?: number
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
@@ -26,7 +28,9 @@ export function BookingDialog({
   externalAddOns,
   externalEventDate,
   externalTimeSlot,
+  addonsTotal = 0,
 }: BookingDialogProps) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [customerName, setCustomerName] = useState('')
   const [phone, setPhone] = useState('')
@@ -64,6 +68,11 @@ export function BookingDialog({
       return
     }
 
+    if (!phone || !phone.match(/\d{10}/)) {
+      setError('Please enter a valid 10-digit phone number.')
+      return
+    }
+
     try {
       setSubmitting(true)
       const response = await fetch(`${API_BASE_URL}/api/bookings`, {
@@ -88,17 +97,16 @@ export function BookingDialog({
         throw new Error(text || 'Failed to create booking. Please try again.')
       }
 
-      setSuccess('Booking submitted! We will contact you to confirm your slot.')
-      setCustomerName('')
-      setPhone('')
-      setSpaceName(defaultSpace)
-      setPackageName(defaultPackage ?? '')
-      setEventDate('')
-      setTimeSlot('')
-      setNotes('')
-      setAddOns(externalAddOns ?? '')
+      const booking = await response.json()
 
-      // Keep dialog open so the user can see the success message
+      // Estimate booking amount (you can adjust this based on your pricing)
+      const bookingAmount = 5000 // Base amount in rupees, adjust as needed
+
+      // Redirect to payment page with booking details
+      const paymentUrl = `/payment?phone=${encodeURIComponent(phone)}&bookingId=${booking.id}&spaceName=${encodeURIComponent(spaceName)}&amount=${bookingAmount}&addonsTotal=${addonsTotal}`
+      
+      setOpen(false)
+      router.push(paymentUrl)
     } catch (err) {
       console.error('Booking failed', err)
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')

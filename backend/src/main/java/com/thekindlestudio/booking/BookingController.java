@@ -9,7 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +46,19 @@ record BookingSummary(
         BookingStatus status,
         String notes,
         String addOns
+) {
+}
+
+record BookingUpdateRequest(
+        String customerName,
+        String phone,
+        String spaceName,
+        String packageName,
+        LocalDate eventDate,
+        String timeSlot,
+        String notes,
+        String addOns,
+        BookingStatus status
 ) {
 }
 
@@ -119,6 +135,68 @@ public class BookingController {
                 .toList();
 
         return new AvailabilityResponse(spaceName, date, bookedSlots);
+    }
+
+    // Admin endpoints
+    @GetMapping("/admin/all")
+    public List<BookingSummary> getAllBookings() {
+        return repository.findAllByOrderByEventDateDescCreatedAtDesc()
+                .stream()
+                .map(this::toSummary)
+                .toList();
+    }
+
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<BookingSummary> getBookingById(@PathVariable Long id) {
+        Optional<Booking> booking = repository.findById(id);
+        if (booking.isPresent()) {
+            return ResponseEntity.ok(toSummary(booking.get()));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<BookingSummary> updateBooking(
+            @PathVariable Long id,
+            @Valid @RequestBody BookingUpdateRequest request
+    ) {
+        Optional<Booking> bookingOpt = repository.findById(id);
+        if (bookingOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Booking booking = bookingOpt.get();
+        
+        if (request.customerName() != null) {
+            booking.setCustomerName(request.customerName());
+        }
+        if (request.phone() != null) {
+            booking.setPhone(request.phone());
+        }
+        if (request.spaceName() != null) {
+            booking.setSpaceName(request.spaceName());
+        }
+        if (request.packageName() != null) {
+            booking.setPackageName(request.packageName());
+        }
+        if (request.eventDate() != null) {
+            booking.setEventDate(request.eventDate());
+        }
+        if (request.timeSlot() != null) {
+            booking.setTimeSlot(request.timeSlot());
+        }
+        if (request.notes() != null) {
+            booking.setNotes(request.notes());
+        }
+        if (request.addOns() != null) {
+            booking.setAddOns(request.addOns());
+        }
+        if (request.status() != null) {
+            booking.setStatus(request.status());
+        }
+
+        Booking updated = repository.save(booking);
+        return ResponseEntity.ok(toSummary(updated));
     }
 
     private BookingSummary toSummary(Booking booking) {

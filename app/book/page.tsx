@@ -11,6 +11,7 @@ import { BookingDialog } from '@/components/booking-dialog'
 import { SlotAvailability } from '@/components/slot-availability'
 import { TermsDialog } from '@/components/terms-dialog'
 import { AddOnsDialog } from '@/components/addons-dialog'
+import { InlineAddOns } from '@/components/inline-addons'
 
 export default function BookingPage() {
   const [privateAddOnsSummary, setPrivateAddOnsSummary] = useState<string | undefined>()
@@ -124,14 +125,8 @@ export default function BookingPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-lg">Add-ons</h3>
-                    <AddOnsDialog
-                      title="Add-ons for Private Theatre"
-                      trigger={
-                        <Button variant="outline" size="sm">
-                          Choose add-ons
-                        </Button>
-                      }
+                    <InlineAddOns
+                      title="Add-ons"
                       items={[
                         {
                           id: 'pt-bouquet',
@@ -174,18 +169,6 @@ export default function BookingPage() {
                         setPrivateAddOnsSummary(summary)
                       }}
                     />
-                    {privateAddOnsTotal > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        Selected add-ons total:{' '}
-                        <span className="font-semibold">₹{privateAddOnsTotal.toLocaleString('en-IN')}</span>
-                      </p>
-                    )}
-
-                    <TermsDialog
-                      spaceName="Private Theatre"
-                      triggerLabel="View terms & conditions"
-                      maxGuests={22}
-                    />
                   </div>
                 </div>
 
@@ -201,6 +184,7 @@ export default function BookingPage() {
                     externalAddOns={privateAddOnsSummary}
                     externalEventDate={privateSelectedSlot?.date}
                     externalTimeSlot={privateSelectedSlot?.slot}
+                    addonsTotal={privateAddOnsTotal}
                     trigger={
                       <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90">
                         Book This Space
@@ -292,13 +276,7 @@ export default function BookingPage() {
 
                   <div className="space-y-4">
                     <h3 className="font-semibold text-lg">Add-ons</h3>
-                    <AddOnsDialog
-                      title="Add-ons for Community Space"
-                      trigger={
-                        <Button variant="outline" size="sm">
-                          Choose add-ons
-                        </Button>
-                      }
+                    <InlineAddOns
                       items={[
                         {
                           id: 'hall-theme',
@@ -347,12 +325,6 @@ export default function BookingPage() {
                         <span className="font-semibold">₹{hallAddOnsTotal.toLocaleString('en-IN')}</span>
                       </p>
                     )}
-
-                    <TermsDialog
-                      spaceName="Community Space"
-                      triggerLabel="View terms & conditions"
-                      maxGuests={80}
-                    />
                   </div>
                 </div>
 
@@ -368,6 +340,7 @@ export default function BookingPage() {
                     externalAddOns={hallAddOnsSummary}
                     externalEventDate={hallSelectedSlot?.date}
                     externalTimeSlot={hallSelectedSlot?.slot}
+                    addonsTotal={hallAddOnsTotal}
                     trigger={
                       <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90">
                         Book This Space

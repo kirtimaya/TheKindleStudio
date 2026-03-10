@@ -25,14 +25,13 @@ export function Hero() {
           </h1>
           
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 text-pretty">
-            A warm, boho-inspired private theatre and a versatile community hall designed for birthdays, anniversaries,
-            proposals, sangeets and everything worth celebrating.
+            Experience luxury in our boho-themed private theatre or host unforgettable events in our versatile community space
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 shadow-lg"
+              className="bg-orange-600 hover:bg-orange-700 text-white text-base px-8 shadow-lg rounded-full"
               asChild
             >
               <Link href="/book">Book Your Slot</Link>
@@ -40,7 +39,7 @@ export function Hero() {
             <Button
               size="lg"
               variant="outline"
-              className="text-base px-8 bg-background/80 backdrop-blur"
+              className="text-base px-8 bg-background/80 backdrop-blur rounded-full border-2"
               asChild
             >
               <Link href="#spaces">Explore Spaces</Link>
