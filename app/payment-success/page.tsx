@@ -1,150 +1,74 @@
 'use client'
 
-import { useSearchParams, useRouter } from 'next/navigation'
+import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { CheckCircle2, Download, Home, MessageSquare } from 'lucide-react'
+import Link from 'next/link'
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const orderId = searchParams.get('orderId')
+  const amount = searchParams.get('amount')
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <Card className="overflow-hidden">
-          <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-12 text-center text-white">
-            <div className="flex justify-center mb-4">
-              <div className="relative">
-                <CheckCircle2 className="h-24 w-24 animate-bounce" />
-              </div>
-            </div>
-            <h1 className="text-4xl font-bold mb-2">Payment Successful!</h1>
-            <p className="text-lg opacity-90">Your booking has been confirmed</p>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-slate-800 rounded-lg shadow-xl p-8 text-center border border-orange-500/20">
+        {/* Success Icon */}
+        <div className="mb-6 flex justify-center">
+          <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
           </div>
+        </div>
 
-          <div className="p-8 space-y-8">
-            {/* Order Details */}
-            <div className="bg-green-50 rounded-lg p-6 space-y-4">
-              <h2 className="font-semibold text-lg text-green-900">Order Details</h2>
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-white mb-2">Payment Successful!</h1>
+        <p className="text-gray-400 mb-6">Your booking has been confirmed</p>
 
-              {orderId && (
-                <div className="space-y-2">
-                  <p className="text-sm text-green-700 font-semibold">Order ID</p>
-                  <p className="font-mono text-lg font-bold text-green-900 break-all">{orderId}</p>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Status</p>
-                  <p className="font-semibold text-green-600">Confirmed</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Date</p>
-                  <p className="font-semibold">{new Date().toLocaleDateString('en-IN')}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Next Steps */}
-            <div className="space-y-4">
-              <h2 className="font-semibold text-lg">What's Next?</h2>
-              <div className="space-y-3">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-white text-sm font-bold">
-                      1
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Confirmation Email</h3>
-                    <p className="text-sm text-muted-foreground">Check your email for booking confirmation and receipt</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-white text-sm font-bold">
-                      2
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Review Booking Details</h3>
-                    <p className="text-sm text-muted-foreground">You can view and manage your booking through your account</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-white text-sm font-bold">
-                      3
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Event Day</h3>
-                    <p className="text-sm text-muted-foreground">Arrive 15 minutes early for setup and check-in</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Support */}
-            <div className="bg-blue-50 rounded-lg p-6">
-              <h2 className="font-semibold mb-4 flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Need Help?
-              </h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Our team is here to assist you. Contact us for any questions about your booking.
-              </p>
-              <a href="mailto:contact@thekindlestudio.com" className="text-primary font-semibold hover:underline">
-                contact@thekindlestudio.com
-              </a>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3 pt-4">
-              <Button
-                size="lg"
-                onClick={() => router.push('/')}
-                className="bg-primary hover:bg-primary/90 text-white"
-              >
-                <Home className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => {
-                  const receipt = `
-The Kindle Studio - Booking Confirmation
-
-Order ID: ${orderId}
-Date: ${new Date().toLocaleDateString('en-IN')}
-Status: Confirmed
-
-Thank you for your booking!
-
-For more details, check your email or contact us.
-                  `
-                  const element = document.createElement('a')
-                  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(receipt))
-                  element.setAttribute('download', `receipt-${orderId}.txt`)
-                  element.style.display = 'none'
-                  document.body.appendChild(element)
-                  element.click()
-                  document.body.removeChild(element)
-                }}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Download Receipt
-              </Button>
-            </div>
+        {/* Order Details */}
+        <div className="bg-slate-700/50 rounded-lg p-4 mb-6 space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-400">Order ID:</span>
+            <span className="text-white font-mono">{orderId || 'N/A'}</span>
           </div>
-        </Card>
+          <div className="flex justify-between text-sm border-t border-slate-600 pt-3">
+            <span className="text-gray-400">Amount Paid:</span>
+            <span className="text-orange-500 font-semibold">₹{amount || '0'}</span>
+          </div>
+        </div>
+
+        {/* Message */}
+        <p className="text-gray-400 text-sm mb-6">
+          A confirmation email has been sent to your registered email address. You can track your booking from "My Bookings".
+        </p>
+
+        {/* Buttons */}
+        <div className="space-y-3">
+          <Link href="/" className="block">
+            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-full">
+              Back to Home
+            </Button>
+          </Link>
+          <Link href="/book" className="block">
+            <Button variant="outline" className="w-full border-orange-500/30 text-gray-300 hover:bg-slate-700 rounded-full">
+              View My Bookings
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }

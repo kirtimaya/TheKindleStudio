@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,7 +26,7 @@ interface PaymentFormData {
   addonsTotal?: number
 }
 
-export default function PaymentPage() {
+function PaymentPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [formData, setFormData] = useState<PaymentFormData>({
@@ -418,5 +418,17 @@ export default function PaymentPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center">
+        <div className="text-white">Loading payment page...</div>
+      </div>
+    }>
+      <PaymentPageContent />
+    </Suspense>
   )
 }
