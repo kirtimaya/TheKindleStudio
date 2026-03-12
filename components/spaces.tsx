@@ -63,7 +63,8 @@ export function Spaces() {
                 Experience luxury in our intimate boho-themed private theatre. Perfect for movie nights, celebrations, and special moments with your loved ones.
               </p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mt-auto space-y-6 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   'Plush recliner seating',
                   'Premium projector & sound',
@@ -85,7 +86,7 @@ export function Spaces() {
                 ))}
               </div>
               
-              <div className="pt-4 border-t border-border mt-auto">
+              <div className="pt-4 border-t border-border">
                 <div className="space-y-3">
                   <Button
                     className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
@@ -93,6 +94,7 @@ export function Spaces() {
                     Book Now
                   </Button>
                 </div>
+              </div>
               </div>
             </CardContent>
           </Card>
@@ -131,7 +133,8 @@ export function Spaces() {
                 A customizable community space perfect for larger gatherings, workshops, stand-up comedy, dance events, and corporate meetups.
               </p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mt-auto space-y-6 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   'Flexible seating arrangements',
                   'Professional audio system',
@@ -153,7 +156,7 @@ export function Spaces() {
                 ))}
               </div>
               
-              <div className="pt-4 border-t border-border mt-auto">
+              <div className="pt-4 border-t border-border">
                 <div className="space-y-3">
                   <Button
                     className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
@@ -161,6 +164,7 @@ export function Spaces() {
                     Book Now
                   </Button>
                 </div>
+              </div>
               </div>
             </CardContent>
           </Card>
