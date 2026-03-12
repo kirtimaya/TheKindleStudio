@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { ViewBookingDialog } from '@/components/view-booking-dialog'
 
 type ViewBookingSessionData = {
   phoneNumber: string
@@ -80,10 +81,10 @@ export function Navigation() {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex items-center justify-between h-16 px-4">
         {/* Left: Logo */}
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <img src="/images/logo.jpg" alt="The Kindle Studio" className="h-10 w-10 rounded" />
           <span className="font-bold text-sm">The Kindle Studio</span>
-        </div>
+        </Link>
 
         {/* Right: Navigation Links & Buttons */}
         {mounted && (
@@ -101,9 +102,11 @@ export function Navigation() {
             </Button>
 
             {/* My Bookings Button */}
-            <Button asChild size="sm" className="bg-orange-600 hover:bg-orange-700 text-white text-xs rounded-full px-6">
-              <Link href="/book">My Bookings</Link>
-            </Button>
+            <ViewBookingDialog trigger={
+              <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white text-xs rounded-full px-6">
+                My Bookings
+              </Button>
+            } />
 
             {/* Admin Button */}
             <Button asChild size="sm" className="bg-orange-600 hover:bg-orange-700 text-white text-xs rounded-full px-6">
