@@ -132,28 +132,28 @@ export default function BookingPage() {
                           id: 'pt-bouquet',
                           name: 'Flower bouquet',
                           price: 800,
-                          imageSrc: '/images/addons-bouquet.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1563241598-6ecd3d3b7305?w=500&q=80',
                           description: 'Fresh bouquet to surprise your special one.',
                         },
                         {
                           id: 'pt-cake',
                           name: '1kg designer cake',
                           price: 1600,
-                          imageSrc: '/images/addons-cake.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&q=80',
                           description: 'Custom flavour & message with elegant styling.',
                         },
                         {
                           id: 'pt-candles',
                           name: 'Number & LED candles',
                           price: 500,
-                          imageSrc: '/images/addons-candles.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1603006905581-2245b08fb8a2?w=500&q=80',
                           description: 'Number candles, LED candles and soft lighting accents.',
                         },
                         {
                           id: 'pt-balloons',
                           name: 'Balloon backdrop',
                           price: 1200,
-                          imageSrc: '/images/addons-balloons.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1530103862676-de8892bf3014?w=500&q=80',
                           description: 'Balloon bunches and backdrop styling for photos.',
                         },
                       ]}
@@ -275,35 +275,35 @@ export default function BookingPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-lg">Add-ons</h3>
                     <InlineAddOns
+                      title="Add-ons"
                       items={[
                         {
                           id: 'hall-theme',
                           name: 'Theme decor & backdrop',
                           price: 4000,
-                          imageSrc: '/images/addons-theme.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&q=80',
                           description: 'Stage and backdrop styling to match your event theme.',
                         },
                         {
                           id: 'hall-arch',
                           name: 'Entrance arch',
                           price: 2500,
-                          imageSrc: '/images/addons-arch.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=500&q=80',
                           description: 'Decorated arch at the entry for grand welcomes.',
                         },
                         {
                           id: 'hall-balloons',
                           name: 'Balloon garlands',
                           price: 2200,
-                          imageSrc: '/images/addons-hall-balloons.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1507504031003-b417242a53b4?w=500&q=80',
                           description: 'Balloon styling for stage and key photo spots.',
                         },
                         {
                           id: 'hall-caketable',
                           name: 'Cake table styling',
                           price: 1500,
-                          imageSrc: '/images/addons-cake-table.jpg',
+                          imageSrc: 'https://images.unsplash.com/photo-1558293998-dfd92c73229b?w=500&q=80',
                           description: 'Decorated cake table with props and lighting.',
                         },
                       ]}

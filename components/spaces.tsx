@@ -87,10 +87,6 @@ export function Spaces() {
               
               <div className="pt-4 border-t border-border">
                 <div className="space-y-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-2">Starting from</p>
-                    <p className="text-2xl font-bold text-orange-600">₹499 - ₹1499</p>
-                  </div>
                   <Button
                     className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
                   >
@@ -159,10 +155,6 @@ export function Spaces() {
               
               <div className="pt-4 border-t border-border">
                 <div className="space-y-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-2">Starting from</p>
-                    <p className="text-2xl font-bold text-orange-600">₹2999 - ₹5999</p>
-                  </div>
                   <Button
                     className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
                   >
