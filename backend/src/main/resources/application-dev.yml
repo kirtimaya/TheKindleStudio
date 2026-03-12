@@ -4,13 +4,11 @@ server:
 spring:
   application:
     name: kindle-studio-backend
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:54322/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
@@ -32,11 +30,9 @@ spring:
 
   flyway:
     enabled: false
-    # locations: classpath:db/migration
 
 logging:
   level:
     root: INFO
     org.springframework.web: INFO
     org.hibernate.SQL: INFO
-

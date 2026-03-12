@@ -1,14 +1,6 @@
-server:
-  port: ${SERVER_PORT:8080}
-
 spring:
-  application:
-    name: kindle-studio-backend
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
-
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://mkicsnvgkkqcrdirseys.pooler.supabase.com:6543/postgres?sslmode=require&prepareThreshold=0}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -25,18 +17,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        format_sql: false
         temp:
           use_jdbc_metadata_defaults: false
     open-in-view: false
 
   flyway:
     enabled: false
-    # locations: classpath:db/migration
 
 logging:
   level:
     root: INFO
-    org.springframework.web: INFO
-    org.hibernate.SQL: INFO
-
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
