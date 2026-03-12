@@ -11,14 +11,14 @@ export function Spaces() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
   return (
-    <section id="spaces" className="py-20 bg-gradient-to-b from-background to-secondary/30">
+    <section id="spaces" className="py-24 bg-black relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-700 text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-600/10 border border-orange-600/20 text-orange-500 text-xs font-bold uppercase tracking-widest mb-4">
             Our Spaces
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Choose Your Perfect Space</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
+          <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 text-white">Choose Your <span className="text-amber-400">Perfect Space</span></h2>
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             From intimate theatre experiences to grand celebrations
           </p>
         </div>
@@ -26,40 +26,32 @@ export function Spaces() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Private Theatre */}
           <Card 
-            className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-2 hover:border-primary/50 flex flex-col"
+            className="overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl hover:border-orange-600/50 transition-all duration-500 flex flex-col group"
             onMouseEnter={() => setHoveredCard(1)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <div className="relative h-72 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden group">
+            <div className="relative h-80 overflow-hidden">
               <img 
                 src="/images/private-theatre.jpg" 
                 alt="Private Theatre - The Celebs Town" 
                 className={`w-full h-full object-cover transition-transform duration-700 ${hoveredCard === 1 ? 'scale-110' : 'scale-100'}`}
               />
-              <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-500 ${hoveredCard === 1 ? 'opacity-100' : 'opacity-90'}`} />
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600/90 backdrop-blur-sm text-sm font-medium shadow-lg text-white">
-                  <Users className="w-4 h-4" />
-                  <span>Up to 22</span>
-                </div>
-              </div>
-              <div className={`absolute top-4 right-4 transition-all duration-500 ${hoveredCard === 1 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
-                <div className="bg-accent/90 backdrop-blur-sm text-accent-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                  Insta-Worthy
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute top-4 left-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600 text-white text-xs font-bold shadow-lg">
+                  <Users className="w-3.5 h-3.5" />
+                  <span>Up to 22 Guests</span>
                 </div>
               </div>
             </div>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                The Celebs Town - Private Theatre
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl font-bold text-white">
+                The Celebs Town
               </CardTitle>
-              <CardDescription className="text-xs font-semibold text-orange-600 mb-2">Boho Themed Private Cinema</CardDescription>
-              <CardDescription className="text-sm">
-                Experience luxury in our intimate boho-themed private theatre.
-              </CardDescription>
+              <CardDescription className="text-sm font-bold text-amber-400">BOHO THEMED PRIVATE CINEMA</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6 flex flex-col flex-1">
-              <p className="text-muted-foreground leading-relaxed">
+            <CardContent className="space-y-6 flex flex-col flex-1 pt-0">
+              <p className="text-gray-400 leading-relaxed text-sm">
                 Experience luxury in our intimate boho-themed private theatre. Perfect for movie nights, celebrations, and special moments with your loved ones.
               </p>
               
@@ -78,10 +70,10 @@ export function Spaces() {
                     className="flex items-center gap-2 text-sm animate-fade-in"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-primary" />
+                    <div className="w-5 h-5 rounded-full bg-orange-600/10 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-orange-500" />
                     </div>
-                    <span>{feature}</span>
+                    <span className="text-gray-300">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -89,9 +81,10 @@ export function Spaces() {
               <div className="pt-4 border-t border-border">
                 <div className="space-y-3">
                   <Button
-                    className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
+                    asChild
+                    className="w-full bg-orange-600 text-white hover:bg-orange-500 rounded-full font-bold py-6 text-base transition-all shadow-lg shadow-orange-600/20"
                   >
-                    Book Now
+                    <Link href="/book">Book Now</Link>
                   </Button>
                 </div>
               </div>
@@ -101,35 +94,32 @@ export function Spaces() {
           
           {/* Community Space */}
           <Card 
-            className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-2 hover:border-accent/50 flex flex-col"
+            className="overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl hover:border-orange-600/50 transition-all duration-500 flex flex-col group"
             onMouseEnter={() => setHoveredCard(2)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <div className="relative h-72 bg-gradient-to-br from-accent/20 to-primary/20 overflow-hidden group">
+            <div className="relative h-80 overflow-hidden">
               <img 
                 src="/images/community-space.jpg" 
                 alt="Community Space - The Nawabi Hall" 
                 className={`w-full h-full object-cover transition-transform duration-700 ${hoveredCard === 2 ? 'scale-110' : 'scale-100'}`}
               />
-              <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-500 ${hoveredCard === 2 ? 'opacity-100' : 'opacity-90'}`} />
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600/90 backdrop-blur-sm text-sm font-medium shadow-lg text-white">
-                  <Users className="w-4 h-4" />
-                  <span>Up to 80</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute top-4 left-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600 text-white text-xs font-bold shadow-lg">
+                  <Users className="w-3.5 h-3.5" />
+                  <span>Up to 80 Guests</span>
                 </div>
               </div>
             </div>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                The Nawabi Hall - Community Space
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl font-bold text-white">
+                The Nawabi Hall
               </CardTitle>
-              <CardDescription className="text-xs font-semibold text-orange-600 mb-2">Versatile Event Venue</CardDescription>
-              <CardDescription className="text-sm">
-                A customizable community space perfect for larger gatherings.
-              </CardDescription>
+              <CardDescription className="text-sm font-bold text-amber-400">VERSATILE EVENT VENUE</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6 flex flex-col flex-1">
-              <p className="text-muted-foreground leading-relaxed">
+            <CardContent className="space-y-6 flex flex-col flex-1 pt-0">
+              <p className="text-gray-400 leading-relaxed text-sm">
                 A customizable community space perfect for larger gatherings, workshops, stand-up comedy, dance events, and corporate meetups.
               </p>
               
@@ -148,10 +138,10 @@ export function Spaces() {
                     className="flex items-center gap-2 text-sm animate-fade-in"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="w-5 h-5 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-accent" />
+                    <div className="w-5 h-5 rounded-full bg-orange-600/10 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-orange-500" />
                     </div>
-                    <span>{feature}</span>
+                    <span className="text-gray-300">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -159,9 +149,10 @@ export function Spaces() {
               <div className="pt-4 border-t border-border">
                 <div className="space-y-3">
                   <Button
-                    className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
+                    asChild
+                    className="w-full bg-orange-600 text-white hover:bg-orange-500 rounded-full font-bold py-6 text-base transition-all shadow-lg shadow-orange-600/20"
                   >
-                    Book Now
+                    <Link href="/book">Book Now</Link>
                   </Button>
                 </div>
               </div>

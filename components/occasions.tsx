@@ -38,28 +38,28 @@ const occasions = [
 
 export function Occasions() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-24 bg-black">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Perfect For Every Occasion</h2>
-          <p className="text-lg text-muted-foreground text-pretty">
-            From intimate screenings to grand celebrations
+        <div className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 text-white">Perfect For Every <span className="text-amber-400">Occasion</span></h2>
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            From intimate screenings to grand community celebrations
           </p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {occasions.map((occasion, index) => {
             const Icon = occasion.icon
             return (
               <Card
                 key={index}
-                className="p-6 hover:shadow-lg transition-shadow hover:border-primary cursor-pointer group"
+                className="p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl hover:border-orange-600/50 hover:bg-white/10 transition-all duration-300 cursor-default group"
               >
-                <div className="flex flex-col items-center text-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <Icon className="w-6 h-6 text-primary" />
+                <div className="flex flex-col items-center text-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-orange-600/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-orange-600/20 transition-all duration-300">
+                    <Icon className="w-7 h-7 text-orange-500" />
                   </div>
-                  <h3 className="text-sm font-medium text-balance">{occasion.title}</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">{occasion.title}</h3>
                 </div>
               </Card>
             )
