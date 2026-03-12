@@ -26,7 +26,7 @@ export function Spaces() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Private Theatre */}
           <Card 
-            className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-2 hover:border-primary/50"
+            className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-2 hover:border-primary/50 flex flex-col"
             onMouseEnter={() => setHoveredCard(1)}
             onMouseLeave={() => setHoveredCard(null)}
           >
@@ -58,7 +58,7 @@ export function Spaces() {
                 Experience luxury in our intimate boho-themed private theatre.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex flex-col flex-1">
               <p className="text-muted-foreground leading-relaxed">
                 Experience luxury in our intimate boho-themed private theatre. Perfect for movie nights, celebrations, and special moments with your loved ones.
               </p>
@@ -85,7 +85,7 @@ export function Spaces() {
                 ))}
               </div>
               
-              <div className="pt-4 border-t border-border">
+              <div className="pt-4 border-t border-border mt-auto">
                 <div className="space-y-3">
                   <Button
                     className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
@@ -99,7 +99,7 @@ export function Spaces() {
           
           {/* Community Space */}
           <Card 
-            className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-2 hover:border-accent/50"
+            className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-2 hover:border-accent/50 flex flex-col"
             onMouseEnter={() => setHoveredCard(2)}
             onMouseLeave={() => setHoveredCard(null)}
           >
@@ -126,7 +126,7 @@ export function Spaces() {
                 A customizable community space perfect for larger gatherings.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex flex-col flex-1">
               <p className="text-muted-foreground leading-relaxed">
                 A customizable community space perfect for larger gatherings, workshops, stand-up comedy, dance events, and corporate meetups.
               </p>
@@ -153,7 +153,7 @@ export function Spaces() {
                 ))}
               </div>
               
-              <div className="pt-4 border-t border-border">
+              <div className="pt-4 border-t border-border mt-auto">
                 <div className="space-y-3">
                   <Button
                     className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-full font-semibold"
