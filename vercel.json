@@ -1,14 +1,15 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "pom.xml",
       "use": "@vercel/java"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "src/main/java/com/yourpackage/Application.java" 
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
