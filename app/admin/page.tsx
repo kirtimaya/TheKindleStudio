@@ -27,6 +27,7 @@ interface AdminSession {
 interface Booking {
   id: number
   customerName: string
+  email: string
   phone: string
   spaceName: string
   packageName?: string
@@ -278,7 +279,7 @@ export default function AdminPage() {
                   <TableHeader>
                     <TableRow className="bg-muted/50">
                       <TableHead className="w-[180px] min-w-[180px]">Customer</TableHead>
-                      <TableHead className="w-[130px] min-w-[130px]">Phone</TableHead>
+                      <TableHead className="w-[200px] min-w-[200px]">Contact Info</TableHead>
                       <TableHead className="w-[200px] min-w-[200px]">Space</TableHead>
                       <TableHead className="w-[280px] min-w-[280px]">Date & Time</TableHead>
                       <TableHead className="w-[340px] min-w-[340px]">Add-ons</TableHead>
@@ -306,16 +307,37 @@ export default function AdminPage() {
                         </TableCell>
                         <TableCell className="align-top py-4">
                           {editingId === booking.id ? (
-                            <div className="space-y-1">
-                              <Label className="text-[10px] text-muted-foreground">Phone</Label>
-                              <Input
-                                value={editingData.phone || ''}
-                                onChange={(e) => setEditingData({ ...editingData, phone: e.target.value })}
-                                className="h-8 w-full text-xs"
-                              />
+                            <div className="space-y-3">
+                              <div className="space-y-1">
+                                <Label className="text-[10px] text-muted-foreground uppercase font-bold text-[9px]">Email</Label>
+                                <Input
+                                  value={editingData.email || ''}
+                                  onChange={(e) => setEditingData({ ...editingData, email: e.target.value })}
+                                  className="h-8 w-full text-xs"
+                                  placeholder="Email"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-[10px] text-muted-foreground uppercase font-bold text-[9px]">Phone</Label>
+                                <Input
+                                  value={editingData.phone || ''}
+                                  onChange={(e) => setEditingData({ ...editingData, phone: e.target.value })}
+                                  className="h-8 w-full text-xs"
+                                  placeholder="Phone"
+                                />
+                              </div>
                             </div>
                           ) : (
-                            <span className="font-mono text-xs text-muted-foreground">{booking.phone}</span>
+                            <div className="space-y-1.5 p-1">
+                              <div className="flex items-center gap-1.5 text-xs text-foreground group">
+                                <span className="p-1 rounded bg-primary/5 text-primary">@</span>
+                                <span className="font-medium break-all">{booking.email}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                                <span className="p-1 rounded bg-secondary/50 text-muted-foreground">#</span>
+                                <span className="font-mono">{booking.phone}</span>
+                              </div>
+                            </div>
                           )}
                         </TableCell>
                         <TableCell className="text-sm align-top leading-tight py-4">

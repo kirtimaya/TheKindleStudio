@@ -9,14 +9,16 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, CheckCircle2, Loader2, LogOut, Edit2, Save, X, Info } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
 
-type Step = 'phone' | 'otp' | 'bookings'
+type Step = 'email' | 'otp' | 'bookings'
 
 type BookingSummary = {
   id: number
   customerName: string
+  email: string
   phone: string
   spaceName: string
   packageName?: string | null
@@ -28,7 +30,7 @@ type BookingSummary = {
 }
 
 type ViewBookingSessionData = {
-  phoneNumber: string
+  email: string
   verified: boolean
   loginTime: string
 }
@@ -47,11 +49,12 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen
   const setOpen = onOpenChange !== undefined ? onOpenChange : setInternalOpen
   
-  const [step, setStep] = useState<Step>('phone')
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [step, setStep] = useState<Step>('email')
+  const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [infoMessage, setInfoMessage] = useState<string | null>(null)
   const [bookings, setBookings] = useState<BookingSummary[] | null>(null)
   const [timeLeft, setTimeLeft] = useState(0)
   const [session, setSession] = useState<ViewBookingSessionData | null>(null)
@@ -60,32 +63,28 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
 
   // Check for existing session on component mount
   useEffect(() => {
-    if (open) {
-      const sessionData = localStorage.getItem('viewBookingSession')
-      if (sessionData) {
-        try {
-          const parsed = JSON.parse(sessionData)
-          // Check if session is still valid (within 30 minutes)
-          const loginTime = new Date(parsed.loginTime).getTime()
-          const now = new Date().getTime()
-          const thirtyMinutes = 30 * 60 * 1000
-          
-          if (now - loginTime < thirtyMinutes) {
-            setSession(parsed)
-            setPhoneNumber(parsed.phoneNumber)
-            setStep('bookings')
-            fetchBookings(parsed.phoneNumber)
-            return
-          } else {
-            // Session expired
-            localStorage.removeItem('viewBookingSession')
-          }
-        } catch (e) {
-          console.error('Failed to parse session', e)
+    const checkSession = async () => {
+      if (open) {
+        const { data: { session: supabaseSession } } = await supabase.auth.getSession()
+        
+        if (supabaseSession?.user?.email) {
+          const userEmail = supabaseSession.user.email
+          setSession({
+            email: userEmail,
+            verified: true,
+            loginTime: new Date().toISOString(),
+          })
+          setEmail(userEmail)
+          setStep('bookings')
+          fetchBookings(userEmail)
+        } else {
+          setStep('email')
+          setSession(null)
+          setBookings(null)
         }
       }
-      setStep('phone')
     }
+    checkSession()
   }, [open])
 
   // Countdown timer for OTP
@@ -95,11 +94,13 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
     return () => clearTimeout(timer)
   }, [timeLeft])
 
-  const fetchBookings = async (phone: string) => {
+  const fetchBookings = async (email: string) => {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`${API_BASE_URL}/api/bookings/by-phone?phone=${encodeURIComponent(phone)}`)
+      setInfoMessage(null)
+      const trimmedEmail = email.trim()
+      const response = await fetch(`${API_BASE_URL}/api/bookings/by-email?email=${encodeURIComponent(trimmedEmail)}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch bookings')
@@ -108,7 +109,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
       const data: BookingSummary[] = await response.json()
       setBookings(data)
       if (data.length === 0) {
-        setError('No bookings found for this phone number.')
+        setInfoMessage('No bookings found for this email address.')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch bookings. Please try again.')
@@ -124,33 +125,29 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
     setLoading(true)
 
     try {
-      if (!phoneNumber || !phoneNumber.match(/^\d{10}$/)) {
-        throw new Error('Please enter a valid 10-digit phone number')
+      if (!email || !email.includes('@')) {
+        throw new Error('Please enter a valid email address')
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber }),
+      const trimmedEmail = email.trim()
+      
+      const { error: supabaseError } = await supabase.auth.signInWithOtp({
+        email: trimmedEmail,
+        options: {
+          shouldCreateUser: true,
+        }
       })
 
-      if (!response.ok) {
-        const text = await response.text()
-        throw new Error(text || 'Failed to send OTP')
+      if (supabaseError) {
+        throw supabaseError
       }
 
-      const data = await response.json()
       setStep('otp')
       setTimeLeft(600) // 10 minutes
       setError(null)
+      
+      setInfoMessage('Check your email for the verification code.')
 
-      // Show test OTP in alert for demo
-      if (data.message && data.message.includes('OTP is:')) {
-        const otpMatch = data.message.match(/OTP is: (\d{6})/)
-        if (otpMatch) {
-          alert(`Demo OTP: ${otpMatch[1]}\n\nThis is shown for testing only.`)
-        }
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send OTP. Please try again.')
     } finally {
@@ -168,22 +165,25 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
         throw new Error('Please enter a 6-digit OTP')
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber, otp }),
+      const trimmedEmail = email.trim()
+      
+      const { data: authData, error: authError } = await supabase.auth.verifyOtp({
+        email: trimmedEmail,
+        token: otp,
+        type: 'email'
       })
 
-      if (!response.ok) {
-        const text = await response.text()
-        throw new Error(text || 'OTP verification failed')
+      if (authError) {
+        throw authError
       }
 
-      const data = await response.json()
+      if (!authData.session) {
+        throw new Error('Failed to create session. Please try again.')
+      }
 
       // Store session
       const sessionData: ViewBookingSessionData = {
-        phoneNumber: data.phoneNumber,
+        email: authData.user?.email || trimmedEmail,
         verified: true,
         loginTime: new Date().toISOString(),
       }
@@ -192,7 +192,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
 
       // Fetch bookings
       setStep('bookings')
-      await fetchBookings(phoneNumber)
+      await fetchBookings(trimmedEmail)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Verification failed. Please try again.')
     } finally {
@@ -200,13 +200,14 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
     localStorage.removeItem('viewBookingSession')
     setSession(null)
-    setPhoneNumber('')
+    setEmail('')
     setOtp('')
     setBookings(null)
-    setStep('phone')
+    setStep('email')
     setError(null)
   }
 
@@ -280,7 +281,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
         throw new Error('Failed to update booking')
       }
 
-      await fetchBookings(phoneNumber)
+      await fetchBookings(email)
       setEditingBookingId(null)
       setTempEditData(null)
       setError(null)
@@ -305,8 +306,8 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
         <DialogHeader>
           <DialogTitle>View & Manage Your Booking</DialogTitle>
           <DialogDescription>
-            {step === 'phone' && 'Enter your phone number to get started'}
-            {step === 'otp' && 'Enter the OTP sent to your phone'}
+            {step === 'email' && 'Enter your email address to get started'}
+            {step === 'otp' && 'Enter the OTP sent to your email'}
             {step === 'bookings' && 'Your bookings'}
           </DialogDescription>
         </DialogHeader>
@@ -318,31 +319,34 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
           </Alert>
         )}
 
-        {/* Phone Number Step */}
-        {step === 'phone' && (
+        {infoMessage && (
+          <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg flex items-center gap-3">
+            <Info className="h-5 w-5 text-blue-600" />
+            <p className="text-sm text-blue-800 font-medium">{infoMessage}</p>
+          </div>
+        )}
+
+        {/* Email Step */}
+        {step === 'email' && (
           <form onSubmit={handleSendOtp} className="space-y-4">
             <div>
-              <Label htmlFor="phone" className="text-base font-semibold">
-                Mobile Number
+              <Label htmlFor="email" className="text-base font-semibold">
+                Email Address
               </Label>
-              <p className="text-xs text-muted-foreground mb-2">Enter your 10-digit mobile number</p>
-              <div className="relative">
-                <span className="absolute left-3 top-3 text-muted-foreground font-semibold">+91</span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="9876543210"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                  disabled={loading}
-                  maxLength={10}
-                  className="pl-12 text-lg"
-                  required
-                />
-              </div>
+              <p className="text-xs text-muted-foreground mb-2">Enter the email you used for booking</p>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                className="text-lg"
+                required
+              />
             </div>
-
-            <Button type="submit" size="lg" className="w-full" disabled={loading || !phoneNumber}>
+ 
+            <Button type="submit" size="lg" className="w-full" disabled={loading || !email}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -363,7 +367,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
                 Enter OTP
               </Label>
               <p className="text-xs text-muted-foreground mb-2">
-                OTP sent to <span className="font-semibold">+91 {phoneNumber}</span>
+                OTP sent to <span className="font-semibold">{email}</span>
               </p>
               <Input
                 id="otp"
@@ -404,8 +408,8 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
               )}
             </Button>
 
-            <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => setStep('phone')}>
-              Change number
+            <Button type="button" variant="ghost" size="sm" className="w-full" onClick={() => setStep('email')}>
+              Change email
             </Button>
           </form>
         )}
@@ -416,7 +420,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
             <div className="flex items-center justify-between mb-6">
               <div>
                 <p className="text-sm text-muted-foreground">Logged in as</p>
-                <p className="font-semibold">+91 {phoneNumber}</p>
+                <p className="font-semibold">{email}</p>
               </div>
               <Button
                 variant="outline"

@@ -4,10 +4,10 @@ import Link from 'next/link'
 
 export function Hero() {
   return (
-    <section className="relative h-screen flex flex-col items-center justify-between pt-16 pb-6 overflow-hidden bg-[#050505]">
+    <section className="relative h-screen w-full flex flex-col items-center justify-between pb-8 overflow-hidden bg-[#050505]">
       {/* Background Image - Moody & Precise */}
       <div
-        className="absolute inset-0 bg-cover bg-center blur-[2px] scale-105 opacity-40 transition-opacity duration-1000"
+        className="absolute inset-0 bg-cover bg-center blur-[1px] scale-105 opacity-60 transition-opacity duration-1000"
         style={{ backgroundImage: 'url("https://images.pexels.com/photos/6750181/pexels-photo-6750181.jpeg")' }}
       />
       
@@ -19,13 +19,13 @@ export function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(255,200,0,0.05)_0%,transparent_30%)]" />
 
       {/* Main Content Area */}
-      <div className="container mx-auto px-4 relative z-10 flex-1 flex flex-col items-center justify-center text-center mt-8">
+      <div className="container mx-auto px-4 relative z-10 flex-1 flex flex-col items-center justify-center text-center -mt-10">
         <div className="max-w-4xl">
           {/* Top Badge */}
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 mb-6">
             <Sparkles className="w-3 h-3 text-[#ff7a00] fill-[#ff7a00]" />
             <span className="text-[10px] font-bold text-gray-300 tracking-[0.2em] uppercase">
-              Hyderabad&apos;s Most Insta‑Worthy Private Theatre
+              #1 Insta‑Worthy Private Theatre in Hyderabad
             </span>
           </div>
           
@@ -37,10 +37,10 @@ export function Hero() {
           </h1>
           
           {/* Subtitle */}
-          <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto mb-8 font-medium leading-relaxed">
-            Experience luxury in our boho-themed private theatre or host
+          <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto mb-8 font-medium leading-relaxed">
+            From intimate movie dates to grand celebrations,
             <br className="hidden md:block" />
-            unforgettable events in our versatile community space
+            host your most cherished moments in our premium spaces.
           </p>
  
           {/* CTA Buttons */}
@@ -67,37 +67,36 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Hero Stats - More visible whitish/greyish cards & Tighter spacing */}
-      <div className="w-full relative z-10 pb-4 mb-4 -mt-24">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
-            <div className="bg-white/15 backdrop-blur-[30px] border border-white/20 p-8 rounded-[2.5rem] text-center shadow-2xl hover:bg-white/20 transition-all duration-500">
-              <span className="text-4xl font-extrabold text-[#facd15] block mb-1">22</span>
-              <p className="text-[10px] font-bold text-gray-200 uppercase tracking-[0.2em]">Theatre Capacity</p>
+      {/* Hero Stats - Smaller cards & Tighter spacing */}
+      <div className="w-full relative z-10 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
+            <div className="bg-white/10 backdrop-blur-3xl border border-white/20 px-6 py-5 rounded-3xl text-center shadow-2xl transition-all duration-500">
+              <span className="text-3xl font-extrabold text-[#facd15] block mb-0.5">22</span>
+              <p className="text-[9px] font-bold text-gray-300 uppercase tracking-[0.2em]">Theatre Capacity</p>
             </div>
             
-            <div className="bg-white/15 backdrop-blur-[30px] border border-white/20 p-8 rounded-[2.5rem] text-center shadow-2xl hover:bg-white/20 transition-all duration-500">
-              <span className="text-4xl font-extrabold text-[#facd15] block mb-1">80</span>
-              <p className="text-[10px] font-bold text-gray-200 uppercase tracking-[0.2em]">Event Space Capacity</p>
+            <div className="bg-white/10 backdrop-blur-3xl border border-white/20 px-6 py-5 rounded-3xl text-center shadow-2xl transition-all duration-500">
+              <span className="text-3xl font-extrabold text-[#facd15] block mb-0.5">80</span>
+              <p className="text-[9px] font-bold text-gray-300 uppercase tracking-[0.2em]">Event Space Capacity</p>
             </div>
             
-            <div className="bg-white/15 backdrop-blur-[30px] border border-white/20 p-8 rounded-[2.5rem] text-center shadow-2xl hover:bg-white/20 transition-all duration-500">
-              <div className="flex items-center justify-center gap-1.5 mb-1">
-                <span className="text-4xl font-extrabold text-[#facd15]">5</span>
-                <Star className="w-8 h-8 fill-[#facd15] text-[#facd15]" />
+            <div className="bg-white/10 backdrop-blur-3xl border border-white/20 px-6 py-5 rounded-3xl text-center shadow-2xl transition-all duration-500">
+              <div className="flex items-center justify-center gap-1 mb-0.5">
+                <span className="text-3xl font-extrabold text-[#facd15]">5</span>
+                <Star className="w-5 h-5 fill-[#facd15] text-[#facd15]" />
               </div>
-              <p className="text-[10px] font-bold text-gray-200 uppercase tracking-[0.2em]">Customer Rating</p>
+              <p className="text-[9px] font-bold text-gray-300 uppercase tracking-[0.2em]">Customer Rating</p>
             </div>
           </div>
-
-          {/* Scroll Indicator - Bold Orange */}
+        </div>
+      </div>
+      {/* Scroll Indicator - Bold Orange */}
           <div className="flex justify-center animate-bounce">
             <div className="w-6 h-10 border-2 border-[#ff7a00] rounded-full flex items-start justify-center p-2">
               <div className="w-1.5 h-3 bg-[#ff7a00] rounded-full shadow-[0_0_10px_rgba(255,122,0,0.5)]"></div>
             </div>
           </div>
-        </div>
-      </div>
     </section>
   )
 }

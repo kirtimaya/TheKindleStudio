@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 record BookingRequest(
         @NotBlank @Size(max = 100) String customerName,
+        @NotBlank @Size(max = 100) String email,
         @NotBlank @Size(max = 30) String phone,
         @NotBlank @Size(max = 100) String spaceName,
         @Size(max = 100) String packageName,
@@ -38,6 +39,7 @@ record BookingRequest(
 record BookingSummary(
         Long id,
         String customerName,
+        String email,
         String phone,
         String spaceName,
         String packageName,
@@ -51,6 +53,7 @@ record BookingSummary(
 
 record BookingUpdateRequest(
         String customerName,
+        String email,
         String phone,
         String spaceName,
         String packageName,
@@ -90,6 +93,7 @@ public class BookingController {
     public ResponseEntity<BookingSummary> create(@Valid @RequestBody BookingRequest request) {
         Booking booking = new Booking();
         booking.setCustomerName(request.customerName());
+        booking.setEmail(request.email());
         booking.setPhone(request.phone());
         booking.setSpaceName(request.spaceName());
         booking.setPackageName(request.packageName());
@@ -114,6 +118,20 @@ public class BookingController {
             String phone
     ) {
         return repository.findByPhoneOrderByEventDateDescCreatedAtDesc(phone.trim())
+                .stream()
+                .map(this::toSummary)
+                .toList();
+    }
+
+    @GetMapping("/by-email")
+    public List<BookingSummary> findByEmail(
+            @RequestParam("email")
+            @NotBlank
+            @Size(max = 100)
+            String email
+    ) {
+        String cleanEmail = email != null ? email.toLowerCase().trim() : "";
+        return repository.findByEmailOrderByEventDateDescCreatedAtDesc(cleanEmail)
                 .stream()
                 .map(this::toSummary)
                 .toList();
@@ -170,6 +188,9 @@ public class BookingController {
         if (request.customerName() != null) {
             booking.setCustomerName(request.customerName());
         }
+        if (request.email() != null) {
+            booking.setEmail(request.email());
+        }
         if (request.phone() != null) {
             booking.setPhone(request.phone());
         }
@@ -203,6 +224,7 @@ public class BookingController {
         return new BookingSummary(
                 booking.getId(),
                 booking.getCustomerName(),
+                booking.getEmail(),
                 booking.getPhone(),
                 booking.getSpaceName(),
                 booking.getPackageName(),

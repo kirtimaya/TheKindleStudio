@@ -8,6 +8,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByPhoneOrderByEventDateDescCreatedAtDesc(String phone);
+    List<Booking> findByEmailOrderByEventDateDescCreatedAtDesc(String email);
 
     List<Booking> findBySpaceNameAndEventDateAndStatusNot(String spaceName, LocalDate eventDate, BookingStatus status);
 

@@ -6,15 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
-import { AlertCircle, CheckCircle2, Loader2, Phone, Lock } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Loader2, Mail, Lock } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { supabase } from '@/lib/supabase'
 
-type LoginStep = 'phone' | 'otp'
+type LoginStep = 'email' | 'otp'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [step, setStep] = useState<LoginStep>('phone')
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [step, setStep] = useState<LoginStep>('email')
+  const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,20 +36,19 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      if (!phoneNumber || !phoneNumber.match(/^\d{10}$/)) {
-        throw new Error('Please enter a valid 10-digit phone number')
+      if (!email || !email.includes('@')) {
+        throw new Error('Please enter a valid email address')
       }
 
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber }),
+      const { error: supabaseError } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          shouldCreateUser: true,
+        }
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to send OTP')
+      if (supabaseError) {
+        throw supabaseError
       }
 
       setSuccess(true)
@@ -56,13 +56,6 @@ export default function LoginPage() {
       setTimeLeft(600) // 10 minutes
       setError(null)
 
-      // Show test OTP in alert for demo
-      if (data.message.includes('OTP is:')) {
-        const otpMatch = data.message.match(/OTP is: (\d{6})/)
-        if (otpMatch) {
-          alert(`Demo OTP: ${otpMatch[1]}\n\nThis is shown for testing only.`)
-        }
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send OTP. Please try again.')
     } finally {
@@ -80,23 +73,25 @@ export default function LoginPage() {
         throw new Error('Please enter a 6-digit OTP')
       }
 
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber, otp }),
+      const { data, error: authError } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token: otp,
+        type: 'email'
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'OTP verification failed')
+      if (authError) {
+        throw authError
       }
 
-      // Store user session
+      if (!data.session) {
+        throw new Error('Failed to create session. Please try again.')
+      }
+
+      // Store user session for legacy components if needed
       localStorage.setItem(
         'userSession',
         JSON.stringify({
-          phoneNumber: data.phoneNumber,
+          email: data.user?.email || email,
           isLoggedIn: true,
           loginTime: new Date().toISOString(),
         })
@@ -131,11 +126,11 @@ export default function LoginPage() {
             <div className="text-center space-y-2">
               <div className="flex justify-center mb-4">
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Phone className="h-6 w-6 text-primary" />
+                  <Mail className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <h1 className="text-3xl font-bold">Welcome Back</h1>
-              <p className="text-muted-foreground">Login with your mobile number</p>
+              <p className="text-muted-foreground">Login with your email address</p>
             </div>
 
             {/* Error Alert */}
@@ -150,7 +145,7 @@ export default function LoginPage() {
             {success && step === 'otp' && (
               <Alert className="border-green-200 bg-green-50">
                 <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800">OTP sent to {phoneNumber}</AlertDescription>
+                <AlertDescription className="text-green-800">OTP sent to {email}</AlertDescription>
               </Alert>
             )}
 
@@ -161,31 +156,27 @@ export default function LoginPage() {
               </Alert>
             )}
 
-            {/* Phone Number Step */}
-            {step === 'phone' && (
+            {/* Email Step */}
+            {step === 'email' && (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div>
-                  <Label htmlFor="phone" className="text-base font-semibold">
-                    Mobile Number
+                  <Label htmlFor="email" className="text-base font-semibold">
+                    Email Address
                   </Label>
-                  <p className="text-xs text-muted-foreground mb-2">Enter your 10-digit mobile number</p>
-                  <div className="relative">
-                    <span className="absolute left-3 top-3 text-muted-foreground font-semibold">+91</span>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="9876543210"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      disabled={loading}
-                      maxLength={10}
-                      className="pl-12 text-lg"
-                      required
-                    />
-                  </div>
+                  <p className="text-xs text-muted-foreground mb-2">Enter your email to receive a login code</p>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="example@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                    className="text-lg"
+                    required
+                  />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full" disabled={loading || !phoneNumber}>
+                <Button type="submit" size="lg" className="w-full" disabled={loading || !email}>
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -197,7 +188,7 @@ export default function LoginPage() {
                 </Button>
 
                 <p className="text-xs text-center text-muted-foreground">
-                  We'll send a one-time password to your mobile number for verification
+                  We'll send a one-time password to your email for verification
                 </p>
               </form>
             )}
@@ -219,7 +210,7 @@ export default function LoginPage() {
                     </button>
                   </div>
                   <p className="text-xs text-muted-foreground mb-2">
-                    OTP sent to <span className="font-semibold">+91 {phoneNumber}</span>
+                    OTP sent to <span className="font-semibold">{email}</span>
                   </p>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
@@ -283,8 +274,8 @@ export default function LoginPage() {
 
             {/* Demo Credentials */}
             <div className="bg-blue-50 rounded-lg p-3 space-y-2 text-xs text-blue-800">
-              <p className="font-semibold">Test Credentials</p>
-              <p>Use any 10-digit number to receive demo OTP. Check the alert popup for the OTP code.</p>
+              <p className="font-semibold">Supabase Auth</p>
+              <p>Magic links and OTP codes are sent via Supabase. Please check your inbox.</p>
             </div>
           </div>
         </Card>

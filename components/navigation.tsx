@@ -7,8 +7,11 @@ import { useState, useEffect } from 'react'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { ViewBookingDialog } from '@/components/view-booking-dialog'
 
+import { supabase } from '@/lib/supabase'
+import { User } from '@supabase/supabase-js'
+
 type ViewBookingSessionData = {
-  phoneNumber: string
+  email: string
   verified: boolean
   loginTime: string
 }
@@ -43,24 +46,21 @@ export function Navigation() {
       }
     }
 
-    // Check if user has OTP-verified booking session
-    const bookingSessionData = localStorage.getItem('viewBookingSession')
-    if (bookingSessionData) {
-      try {
-        const parsed = JSON.parse(bookingSessionData)
-        // Check if session is still valid (within 30 minutes)
-        const loginTime = new Date(parsed.loginTime).getTime()
-        const now = new Date().getTime()
-        const thirtyMinutes = 30 * 60 * 1000
-        
-        if (now - loginTime < thirtyMinutes && parsed.verified) {
-          setBookingSession(parsed)
-        } else {
-          localStorage.removeItem('viewBookingSession')
-        }
-      } catch (e) {
-        console.error('Failed to parse booking session')
+    // Subscribe to Supabase auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user?.email) {
+        setBookingSession({
+          email: session.user.email,
+          verified: true,
+          loginTime: new Date().toISOString(),
+        })
+      } else {
+        setBookingSession(null)
       }
+    })
+
+    return () => {
+      subscription.unsubscribe()
     }
   }, [])
 

@@ -23,25 +23,26 @@ public class UserController {
 
     @PostMapping("/send-otp")
     public ResponseEntity<OtpResponse> sendOtp(@RequestBody SendOtpRequest request) {
-        String phoneNumber = request.phoneNumber();
+        String email = request.email();
 
-        // Validate phone number format
-        if (!phoneNumber.matches("\\d{10}")) {
-            return ResponseEntity.badRequest().body(new OtpResponse(false, "Invalid phone number format. Please enter 10 digits."));
+        // Validate email format
+        if (email == null || !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+            return ResponseEntity.badRequest().body(new OtpResponse(false, "Invalid email address format."));
         }
+        email = email.toLowerCase().trim();
 
         // Generate 6-digit OTP
         String otp = String.format("%06d", random.nextInt(999999));
 
         // Get or create user
-        Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
+        Optional<User> existingUser = userRepository.findByEmail(email);
         User user;
 
         if (existingUser.isPresent()) {
             user = existingUser.get();
         } else {
             user = new User();
-            user.setPhoneNumber(phoneNumber);
+            user.setEmail(email);
             user.setIsVerified(false);
         }
 
@@ -50,22 +51,21 @@ public class UserController {
         user.setOtpExpiry(OffsetDateTime.now().plusMinutes(OTP_VALIDITY_MINUTES));
         userRepository.save(user);
 
-        // In a real scenario, you would send this OTP via SMS using a service like Twilio
-        // For now, we'll log it or return it (not recommended for production)
-        System.out.println("OTP for " + phoneNumber + ": " + otp);
+        // In a real scenario, you would send this OTP via Email service
+        System.out.println("OTP for " + email + ": " + otp);
 
-        return ResponseEntity.ok(new OtpResponse(true, "OTP sent to " + phoneNumber + ". For demo purposes, OTP is: " + otp));
+        return ResponseEntity.ok(new OtpResponse(true, "OTP sent to " + email + ". For demo purposes, OTP is: " + otp));
     }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<VerifyOtpResponse> verifyOtp(@RequestBody VerifyOtpRequest request) {
-        String phoneNumber = request.phoneNumber();
+        String email = request.email() != null ? request.email().toLowerCase().trim() : null;
         String otp = request.otp();
 
-        Optional<User> userOptional = userRepository.findByPhoneNumber(phoneNumber);
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body(new VerifyOtpResponse(false, "Phone number not found. Please send OTP first.", null));
+            return ResponseEntity.badRequest().body(new VerifyOtpResponse(false, "Email not found. Please send OTP first.", null));
         }
 
         User user = userOptional.get();
@@ -81,6 +81,7 @@ public class UserController {
 
         // Verify OTP
         if (!user.getOtpCode().equals(otp)) {
+            System.out.println("Verification FAILED for " + email + ": Invalid OTP. Expected " + user.getOtpCode() + " but got " + otp);
             return ResponseEntity.badRequest().body(new VerifyOtpResponse(false, "Invalid OTP. Please try again.", null));
         }
 
@@ -90,7 +91,8 @@ public class UserController {
         user.setOtpExpiry(null);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new VerifyOtpResponse(true, "OTP verified successfully!", phoneNumber));
+        System.out.println("Verification SUCCESS for " + email);
+        return ResponseEntity.ok(new VerifyOtpResponse(true, "OTP verified successfully!", email));
     }
 
     @PostMapping("/logout")
