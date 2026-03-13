@@ -131,6 +131,21 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
 
       const trimmedEmail = email.trim()
       
+      // Step 1: Check if bookings exist for this email in the database
+      const checkResponse = await fetch(`${API_BASE_URL}/api/bookings/by-email?email=${encodeURIComponent(trimmedEmail)}`)
+      
+      if (!checkResponse.ok) {
+        throw new Error('Unable to verify your email at this time. Please try again.')
+      }
+
+      const existingBookings: BookingSummary[] = await checkResponse.json()
+      
+      if (existingBookings.length === 0) {
+        setError('No bookings available for this email address. Please check your spelling or book a new slot!')
+        return
+      }
+
+      // Step 2: If bookings exist, send OTP via Supabase
       const { error: supabaseError } = await supabase.auth.signInWithOtp({
         email: trimmedEmail,
         options: {
@@ -139,13 +154,15 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
       })
 
       if (supabaseError) {
+        if (supabaseError.message.includes('rate limit')) {
+           throw new Error('Too many requests. Please wait a minute before trying again.')
+        }
         throw supabaseError
       }
 
       setStep('otp')
       setTimeLeft(600) // 10 minutes
       setError(null)
-      
       setInfoMessage('Check your email for the verification code.')
 
     } catch (err) {
