@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
 
 interface PaymentFormData {
+  email: string
   phoneNumber: string
   paymentSource: 'CARD' | 'UPI' | 'NET_BANKING' | 'WALLET'
   cardNumber?: string
@@ -30,6 +31,7 @@ function PaymentPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [formData, setFormData] = useState<PaymentFormData>({
+    email: '',
     phoneNumber: '',
     paymentSource: 'CARD',
   })
@@ -39,16 +41,18 @@ function PaymentPageContent() {
 
   useEffect(() => {
     // Get payment details from URL params or session
+    const email = searchParams.get('email')
     const phone = searchParams.get('phone')
     const bookingId = searchParams.get('bookingId')
     const spaceName = searchParams.get('spaceName')
     const amount = searchParams.get('amount')
     const addonsTotal = searchParams.get('addonsTotal')
 
-    if (phone) {
+    if (phone || email) {
       setFormData((prev) => ({
         ...prev,
-        phoneNumber: phone,
+        email: email || '',
+        phoneNumber: phone || '',
         bookingId: bookingId || undefined,
         spaceName: spaceName || undefined,
         amount: amount ? parseInt(amount) : undefined,
@@ -84,6 +88,9 @@ function PaymentPageContent() {
 
     try {
       // Validate form data
+      if (!formData.email || !formData.email.includes('@')) {
+        throw new Error('Please enter a valid email address')
+      }
       if (!formData.phoneNumber || !formData.phoneNumber.match(/\d{10}/)) {
         throw new Error('Please enter a valid 10-digit phone number')
       }
@@ -121,6 +128,7 @@ function PaymentPageContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          email: formData.email,
           phoneNumber: formData.phoneNumber,
           amount: paymentAmount,
           paymentSource: formData.paymentSource,
@@ -230,12 +238,31 @@ function PaymentPageContent() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Email Address */}
+                <div>
+                  <Label htmlFor="email" className="text-base font-semibold">
+                    Email Address
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">Primary contact for booking identification</p>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled={loading}
+                    className="text-lg"
+                    required
+                  />
+                </div>
+
                 {/* Phone Number */}
                 <div>
                   <Label htmlFor="phoneNumber" className="text-base font-semibold">
                     Phone Number
                   </Label>
-                  <p className="text-xs text-muted-foreground mb-2">We'll send confirmation and receipt to this number</p>
+                  <p className="text-xs text-muted-foreground mb-2">Required for WhatsApp confirmation</p>
                   <Input
                     id="phoneNumber"
                     name="phoneNumber"

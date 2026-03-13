@@ -1,3 +1,3 @@
 package com.thekindlestudio.user;
 
-public record VerifyOtpRequest(String phoneNumber, String otp) {}
+public record VerifyOtpRequest(String email, String otp) {}

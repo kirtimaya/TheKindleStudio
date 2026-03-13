@@ -24,6 +24,9 @@ public class Booking {
     @Column(name = "customer_name", nullable = false, length = 100)
     private String customerName;
 
+    @Column(nullable = true, length = 100)
+    private String email;
+
     @Column(nullable = false, length = 30)
     private String phone;
 
@@ -76,6 +79,14 @@ public class Booking {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {

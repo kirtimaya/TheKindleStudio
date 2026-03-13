@@ -1,3 +1,3 @@
 package com.thekindlestudio.user;
 
-public record SendOtpRequest(String phoneNumber) {}
+public record SendOtpRequest(String email) {}
