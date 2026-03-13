@@ -120,8 +120,14 @@ export function Navigation() {
               Contact
             </a>
 
+            <ViewBookingDialog trigger={
+              <Button size="sm" className="bg-[#ff7a00] hover:bg-orange-500 text-white text-sm font-bold rounded-full px-8 py-5 shadow-lg transition-all">
+                My Booking
+              </Button>
+            } />
+
             <Button asChild size="sm" className="bg-[#ff7a00] hover:bg-orange-500 text-white text-sm font-bold rounded-full px-8 py-5 shadow-lg transition-all">
-              <Link href="/book">Book Now</Link>
+              <Link href="/admin/login">Admin</Link>
             </Button>
           </div>
         )}

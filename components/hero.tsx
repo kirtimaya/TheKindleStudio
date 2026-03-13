@@ -59,9 +59,9 @@ export function Hero() {
               size="lg"
               variant="outline"
               className="text-base px-10 py-6 bg-white/[0.08] hover:bg-white/[0.12] backdrop-blur-xl rounded-full border border-white/15 text-white font-bold transition-all duration-300"
-              asChild
+              onClick={() => document.getElementById('spaces')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <Link href="#spaces">Explore Spaces</Link>
+              Explore Spaces
             </Button>
           </div>
         </div>

@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle, CheckCircle2, Loader2, LogOut, Edit2, Save, X } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Loader2, LogOut, Edit2, Save, X, Info } from 'lucide-react'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
 
@@ -36,6 +37,7 @@ type EditingBooking = {
   id: number
   customerName: string
   notes: string | null
+  addOns: string | null
 }
 
 export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChange }: { trigger?: React.ReactNode; isOpen?: boolean; onOpenChange?: (open: boolean) => void }) {
@@ -208,16 +210,54 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
     setError(null)
   }
 
-  const handleEditBooking = (booking: BookingSummary) => {
+  const handleCancelEdit = () => {
+    setEditingBookingId(null)
+    setTempEditData(null)
+    setAddOnSelection([])
+  }
+
+  const [addOnSelection, setAddOnSelection] = useState<string[]>([])
+
+  const THEATRE_ADDONS = [
+    { id: 'Flower bouquet', name: 'Flower bouquet (₹800)' },
+    { id: '1kg designer cake', name: '1kg designer cake (₹1,600)' },
+    { id: 'Number & LED candles', name: 'Number & LED candles (₹500)' },
+    { id: 'Balloon backdrop', name: 'Balloon backdrop (₹1,200)' },
+  ]
+
+  const HALL_ADDONS = [
+    { id: 'Theme decor & backdrop', name: 'Theme decor & backdrop (₹4,000)' },
+    { id: 'Entrance arch', name: 'Entrance arch (₹2,500)' },
+    { id: 'Balloon garlands', name: 'Balloon garlands (₹2,200)' },
+    { id: 'Cake table styling', name: 'Cake table styling (₹1,500)' },
+  ]
+
+  const toggleAddOn = (id: string) => {
+    setAddOnSelection(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+      if (tempEditData) {
+        setTempEditData({ ...tempEditData, addOns: next.join(', ') })
+      }
+      return next
+    })
+  }
+
+  const handleEditBookingLocal = (booking: BookingSummary) => {
     if (booking.status !== 'PENDING') {
       setError('You can only edit bookings with PENDING status.')
       return
     }
     setEditingBookingId(booking.id)
+    
+    // Parse existing add-ons to select them in the list
+    const existingAddOns = booking.addOns ? booking.addOns.split(', ') : []
+    setAddOnSelection(existingAddOns)
+
     setTempEditData({
       id: booking.id,
       customerName: booking.customerName,
       notes: booking.notes || '',
+      addOns: booking.addOns || '',
     })
   }
 
@@ -232,6 +272,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
         body: JSON.stringify({
           customerName: tempEditData.customerName,
           notes: tempEditData.notes,
+          addOns: tempEditData.addOns,
         }),
       })
 
@@ -239,21 +280,16 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
         throw new Error('Failed to update booking')
       }
 
-      // Refresh bookings
       await fetchBookings(phoneNumber)
       setEditingBookingId(null)
       setTempEditData(null)
       setError(null)
+      setAddOnSelection([])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save booking.')
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleCancelEdit = () => {
-    setEditingBookingId(null)
-    setTempEditData(null)
   }
 
   return (
@@ -402,35 +438,77 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
                     <div className="space-y-3">
                       {editingBookingId === booking.id ? (
                         <>
-                          <div>
-                            <Label className="text-xs font-semibold">Name</Label>
-                            <Input
-                              value={tempEditData?.customerName || ''}
-                              onChange={(e) =>
-                                setTempEditData((prev) =>
-                                  prev ? { ...prev, customerName: e.target.value } : null
-                                )
-                              }
-                              className="mt-1"
-                            />
+                          <div className="space-y-3">
+                            <div>
+                              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Name</Label>
+                              <Input
+                                value={tempEditData?.customerName || ''}
+                                onChange={(e) =>
+                                  setTempEditData((prev) =>
+                                    prev ? { ...prev, customerName: e.target.value } : null
+                                  )
+                                }
+                                className="mt-1"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Choose Add-ons</Label>
+                              <div className="grid grid-cols-1 gap-1.5 border border-border/50 rounded-lg p-3 bg-secondary/20">
+                                {(booking.spaceName.includes('Theatre') ? THEATRE_ADDONS : HALL_ADDONS).map((addon) => (
+                                  <label 
+                                    key={addon.id} 
+                                    className={`flex items-center gap-3 p-2 rounded-md transition-colors cursor-pointer text-sm ${
+                                      addOnSelection.includes(addon.id) ? 'bg-primary/10 border border-primary/20' : 'hover:bg-primary/5 border border-transparent'
+                                    }`}
+                                  >
+                                    <input 
+                                      type="checkbox"
+                                      className="w-4 h-4 rounded border-primary text-primary focus:ring-primary"
+                                      checked={addOnSelection.includes(addon.id)}
+                                      onChange={() => toggleAddOn(addon.id)}
+                                    />
+                                    <span className={addOnSelection.includes(addon.id) ? 'font-medium' : ''}>
+                                      {addon.name}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div>
+                              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                Additional Notes
+                              </Label>
+                              <p className="text-[10px] text-muted-foreground mb-1.5 italic">
+                                Any special requests not listed in the add-ons above
+                              </p>
+                              <Textarea
+                                value={tempEditData?.notes || ''}
+                                onChange={(e) =>
+                                  setTempEditData((prev) => (prev ? { ...prev, notes: e.target.value } : null))
+                                }
+                                className="mt-1 resize-none"
+                                rows={2}
+                                placeholder="Example: Want a 'Happy Birthday' banner, veg cake only, etc."
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <Label className="text-xs font-semibold">Notes</Label>
-                            <Input
-                              value={tempEditData?.notes || ''}
-                              onChange={(e) =>
-                                setTempEditData((prev) => (prev ? { ...prev, notes: e.target.value } : null))
-                              }
-                              className="mt-1"
-                              placeholder="Add any special requests or notes"
-                            />
+
+                          <div className="bg-amber-50 border border-amber-100 p-3 rounded-lg flex items-start gap-2.5">
+                            <Info className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                            <p className="text-[10px] text-amber-800 leading-tight">
+                              <strong>Slot Policy:</strong> Date and Time slots are locked. To change your slot, please call us at <a href="tel:+916304671409" className="font-bold underline">+91 6304 671 409</a>.
+                            </p>
                           </div>
-                          <div className="flex gap-2 justify-end">
+
+                          <div className="flex gap-2 justify-end pt-2">
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="ghost"
                               onClick={handleCancelEdit}
                               disabled={loading}
+                              className="text-xs"
                             >
                               <X className="h-4 w-4 mr-1" />
                               Cancel
@@ -439,10 +517,10 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
                               size="sm"
                               onClick={handleSaveBooking}
                               disabled={loading}
-                              className="bg-primary"
+                              className="bg-[#ff7a00] hover:bg-[#e66e00] text-white font-bold text-xs"
                             >
                               <Save className="h-4 w-4 mr-1" />
-                              Save Changes
+                              Update Booking
                             </Button>
                           </div>
                         </>
@@ -502,7 +580,7 @@ export function ViewBookingDialog({ trigger, isOpen: controlledOpen, onOpenChang
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleEditBooking(booking)}
+                              onClick={() => handleEditBookingLocal(booking)}
                               className="w-full mt-2"
                             >
                               <Edit2 className="h-4 w-4 mr-2" />
