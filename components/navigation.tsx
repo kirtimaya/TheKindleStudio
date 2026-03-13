@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Sparkles } from 'lucide-react'
 import { ViewBookingDialog } from '@/components/view-booking-dialog'
 
 type ViewBookingSessionData = {
@@ -20,6 +20,15 @@ export function Navigation() {
   const [bookingSession, setBookingSession] = useState<ViewBookingSessionData | null>(null)
   const [mounted, setMounted] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 80)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     setMounted(true)
@@ -83,39 +92,33 @@ export function Navigation() {
   const handleMobileNav = () => setIsMobileMenuOpen(false)
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-md">
-      <div className="container flex items-center justify-between h-20 px-4 mx-auto">
+    <nav className={`fixed top-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'bg-black/95 shadow-xl border-b border-white/10' : 'bg-transparent'}`}>
+      <div className={`container flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-20' : 'h-28'} px-4 mx-auto`}>
         {/* Left: Logo */}
-        <Link href="/" className="flex items-center gap-3">
-          <img src="/images/logo.jpg" alt="The Kindle Studio" className="h-10 w-10 rounded shadow-md border border-white/20" />
-          <span className="font-extrabold text-xl text-amber-400 tracking-wide font-sans hidden sm:block">The Kindle Studio</span>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 bg-[#ff7a00] rounded-full flex items-center justify-center shadow-lg transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
+            <svg viewBox="0 0 24 24" className="w-6 h-6 text-white fill-white">
+              <path d="M12 2L14.8 8.2L21 11L14.8 13.8L12 20L9.2 13.8L3 11L9.2 8.2L12 2Z" />
+            </svg>
+          </div>
+          <span className="font-bold text-2xl text-white tracking-tighter hidden sm:block">The Kindle Studio</span>
         </Link>
 
         {/* Right: Desktop Navigation */}
         {mounted && (
-          <div className="hidden md:flex items-center gap-6">
-            <Button asChild variant="ghost" size="sm" className="text-sm font-medium hover:text-orange-500 hover:bg-transparent transition-colors">
-              <a href="/#spaces" onClick={handleSpacesClick}>
-                Spaces
-              </a>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="text-sm font-medium hover:text-orange-500 hover:bg-transparent transition-colors">
-              <a href="/#testimonials">Testimonials</a>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="text-sm font-medium hover:text-orange-500 hover:bg-transparent transition-colors">
-              <a href="/#contact">Contact</a>
-            </Button>
+          <div className="hidden md:flex items-center gap-10">
+            <a href="/#spaces" onClick={handleSpacesClick} className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+              Spaces
+            </a>
+            <a href="/#events" className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+              Events
+            </a>
+            <a href="/#contact" className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+              Contact
+            </a>
 
-            {/* My Bookings Button */}
-            <ViewBookingDialog trigger={
-              <Button size="sm" className="bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-full px-6 shadow-lg shadow-orange-600/20 transition-all border border-orange-500">
-                My Bookings
-              </Button>
-            } />
-
-            {/* Admin Button */}
-            <Button asChild size="sm" className="bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-full px-6 shadow-lg shadow-orange-600/20 transition-all border border-orange-500">
-              <Link href="/admin/login">Admin</Link>
+            <Button asChild size="sm" className="bg-[#ff7a00] hover:bg-orange-500 text-white text-sm font-bold rounded-full px-8 py-5 shadow-lg transition-all">
+              <Link href="/book">Book Now</Link>
             </Button>
           </div>
         )}
@@ -137,7 +140,7 @@ export function Navigation() {
 
       {/* Mobile Menu Dropdown */}
       {mounted && isMobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl absolute w-full left-0 top-20 shadow-2xl">
+        <div className="md:hidden bg-black/95 backdrop-blur-xl absolute w-full left-0 top-full shadow-2xl border-t border-white/10">
           <div className="flex flex-col p-4 space-y-4">
             <a href="/#spaces" onClick={handleSpacesClick} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
               Spaces

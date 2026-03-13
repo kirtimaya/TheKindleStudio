@@ -38,7 +38,7 @@ const occasions = [
 
 export function Occasions() {
   return (
-    <section className="py-24 bg-black">
+    <section id="events" className="py-24 bg-black">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 text-white">Perfect For Every <span className="text-amber-400">Occasion</span></h2>
