@@ -7,8 +7,8 @@ export function Hero() {
     <section className="relative min-h-[110vh] flex flex-col items-center justify-center pt-20 overflow-hidden">
       {/* Background Image - Precise Zoom & Crop */}
       <div
-        className="absolute inset-0 bg-cover bg-[center_top] bg-no-repeat"
-        style={{ backgroundImage: 'url(https://images.pexels.com/photos/6750181/pexels-photo-6750181.jpeg)' }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: 'url("https://images.pexels.com/photos/6750181/pexels-photo-6750181.jpeg")' }}
       />
       
       {/* Dynamic Orangish/Brown Tint Overlay */}
