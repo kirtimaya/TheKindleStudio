@@ -75,16 +75,16 @@ export function Navigation() {
     }
   }, [pathname, adminSession])
 
-  const handleSpacesClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
     e.preventDefault()
     
     if (pathname === '/') {
-      // If on landing page, scroll to spaces section
-      const spacesSection = document.getElementById('spaces')
-      spacesSection?.scrollIntoView({ behavior: 'smooth' })
+      // If on landing page, scroll to target section
+      const section = document.getElementById(sectionId)
+      section?.scrollIntoView({ behavior: 'smooth' })
     } else {
-      // If on booking page or elsewhere, navigate to landing page then scroll
-      router.push('/#spaces')
+      // If elsewhere, navigate to landing page then scroll
+      router.push(`/#${sectionId}`)
     }
     setIsMobileMenuOpen(false)
   }
@@ -107,13 +107,16 @@ export function Navigation() {
         {/* Right: Desktop Navigation */}
         {mounted && (
           <div className="hidden md:flex items-center gap-10">
-            <a href="/#spaces" onClick={handleSpacesClick} className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+            <a href="/#spaces" onClick={(e) => handleNavClick(e, 'spaces')} className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
               Spaces
             </a>
-            <a href="/#events" className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+            <a href="/#events" onClick={(e) => handleNavClick(e, 'events')} className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
               Events
             </a>
-            <a href="/#contact" className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+            <a href="/#testimonials" onClick={(e) => handleNavClick(e, 'testimonials')} className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
+              Testimonials
+            </a>
+            <a href="/#contact" onClick={(e) => handleNavClick(e, 'contact')} className="text-sm font-medium text-white/90 hover:text-amber-400 transition-colors">
               Contact
             </a>
 
@@ -142,13 +145,16 @@ export function Navigation() {
       {mounted && isMobileMenuOpen && (
         <div className="md:hidden bg-black/95 backdrop-blur-xl absolute w-full left-0 top-full shadow-2xl border-t border-white/10">
           <div className="flex flex-col p-4 space-y-4">
-            <a href="/#spaces" onClick={handleSpacesClick} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
+            <a href="/#spaces" onClick={(e) => handleNavClick(e, 'spaces')} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
               Spaces
             </a>
-            <a href="/#testimonials" onClick={handleMobileNav} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
+            <a href="/#events" onClick={(e) => handleNavClick(e, 'events')} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
+              Events
+            </a>
+            <a href="/#testimonials" onClick={(e) => handleNavClick(e, 'testimonials')} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
               Testimonials
             </a>
-            <a href="/#contact" onClick={handleMobileNav} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
+            <a href="/#contact" onClick={(e) => handleNavClick(e, 'contact')} className="text-lg font-medium p-2 text-white hover:text-orange-500 transition-colors">
               Contact
             </a>
             <div className="pt-4 border-t border-white/10 flex flex-col gap-3">

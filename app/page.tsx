@@ -1,7 +1,7 @@
 "use client";
 
 import { Hero } from '@/components/hero'
-import { Stats } from '@/components/stats'
+import { Pricing } from '@/components/pricing'
 import { Occasions } from '@/components/occasions'
 import { Spaces } from '@/components/spaces'
 import { Gallery } from '@/components/gallery'
@@ -15,8 +15,9 @@ export default function Home() {
     <div className="min-h-screen">
       <Navigation />
       <Hero />
-      <Occasions />
       <Spaces />
+      <Pricing />
+      <Occasions />
       <Gallery />
       <Testimonials />
       <Contact />
