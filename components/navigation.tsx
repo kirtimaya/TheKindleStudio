@@ -89,20 +89,30 @@ export function Navigation() {
     setIsMobileMenuOpen(false)
   }
 
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      router.push('/')
+    }
+    setIsMobileMenuOpen(false)
+  }
+
   const handleMobileNav = () => setIsMobileMenuOpen(false)
 
   return (
     <nav className={`fixed top-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'bg-black/95 shadow-xl border-b border-white/10' : 'bg-transparent'}`}>
       <div className={`container flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-20' : 'h-28'} px-4 mx-auto`}>
         {/* Left: Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-[#ff7a00] rounded-full flex items-center justify-center shadow-lg transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
-            <svg viewBox="0 0 24 24" className="w-6 h-6 text-white fill-white">
+        <a href="/" onClick={scrollToTop} className="flex items-center gap-2 sm:gap-3 group shrink-0">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 bg-[#ff7a00] rounded-full flex items-center justify-center shadow-lg transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 shrink-0">
+            <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white">
               <path d="M12 2L14.8 8.2L21 11L14.8 13.8L12 20L9.2 13.8L3 11L9.2 8.2L12 2Z" />
             </svg>
           </div>
-          <span className="font-bold text-2xl text-white tracking-tighter hidden sm:block">The Kindle Studio</span>
-        </Link>
+          <span className="font-bold text-xl sm:text-2xl text-white tracking-tighter block whitespace-nowrap">The Kindle Studio</span>
+        </a>
 
         {/* Right: Desktop Navigation */}
         {mounted && (
