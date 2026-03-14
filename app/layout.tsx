@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { BackendStatusProvider } from '@/components/backend-status-provider'
+import { cookies } from 'next/headers'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
@@ -28,15 +30,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = await cookies();
+  const hasSeen = cookieStore.get('hasSeenLoadingScreen');
+
   return (
     <html lang="en" className="dark">
       <body className={`${jakarta.className} antialiased`}>
-        {children}
+        <BackendStatusProvider initialHasSeen={!!hasSeen}>
+          {children}
+        </BackendStatusProvider>
         <Analytics />
       </body>
     </html>
