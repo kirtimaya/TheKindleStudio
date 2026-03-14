@@ -13,7 +13,7 @@ export function useBackendHealth() {
 
     const checkHealth = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/actuator/health`, {
+        const response = await fetch(`${API_BASE_URL}/health`, {
           // Use no-cache to ensure we get the latest status
           cache: 'no-store',
           headers: {
