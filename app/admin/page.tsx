@@ -13,7 +13,7 @@ import { CheckCircle, Clock, XCircle, Edit2, Save, X, LogOut, Info } from 'lucid
 import { Textarea } from '@/components/ui/textarea'
 import Link from 'next/link'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api'
 
 const ALL_SLOTS = ['10:00 - 13:00', '13:00 - 16:00', '16:00 - 19:00', '19:00 - 22:00']
 

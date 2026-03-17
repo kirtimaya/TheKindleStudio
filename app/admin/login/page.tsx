@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api'
 
 export default function AdminLoginPage() {
   const router = useRouter()

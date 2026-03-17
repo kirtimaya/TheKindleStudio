@@ -6,7 +6,7 @@ export function useBackendHealth() {
   const [isHealthy, setIsHealthy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;

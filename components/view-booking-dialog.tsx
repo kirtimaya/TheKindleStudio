@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, CheckCircle2, Loader2, LogOut, Edit2, Save, X, Info } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api'
 
 type Step = 'email' | 'otp' | 'bookings'
 

@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Phone, Instagram, MapPin, Sparkles, HeartHandshake } from 'lucide-react'
 import { useState } from 'react'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api'
 
 export function Contact() {
   const [formData, setFormData] = useState({
